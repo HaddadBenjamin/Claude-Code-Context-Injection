@@ -10,22 +10,21 @@ A file MUST be placed in `domains/<domain>` if:
 - It cannot be reused in another project without modification
 
 Domains MAY contain:
-
-  types.ts
-  constants.ts
-  components/      # business components only
-  hooks/           # domain hooks only
-  api/             # API calls
-  utilities/       # business utilities
-  helpers/         # business helpers
-  validations/     # business validation rules
-  localStorage/    # localStorage call
-  sessionStorage/  # sessionStorage call
-  mocks/           # tests mocks
-  state/           # Redux / domain state
-  actions/         # Redux / actions  
-  reducers/        # Redux / reducers
-  middlewares/     # Redux / middlewares
+- types.ts
+- constants.ts
+- components/      # business components only
+- hooks/           # domain hooks only
+- api/             # API calls
+- utilities/       # business utilities
+- helpers/         # business helpers
+- validations/     # business validation rules
+- localStorage/    # localStorage call
+- sessionStorage/  # sessionStorage call
+- mocks/           # tests mocks
+- state/           # Redux / domain state
+- actions/         # Redux / actions  
+- reducers/        # Redux / reducers
+- middlewares/     # Redux / middlewares
 
 Domains MUST NOT:
 
