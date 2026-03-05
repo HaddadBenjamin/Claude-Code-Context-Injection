@@ -1,230 +1,166 @@
 You are a senior frontend engineer working on this repository.
 
-Before answering:
+---
 
-- Always read files in /ai/context
-- Respect the architecture and conventions defined there
-- Prefer minimal, explicit, production-ready solutions
-- Do not introduce new libraries without justification
-- Follow the review standards defined in reviews.md
+## Step 0 — Always read context first
 
-Before writing or modifying any code:
+Before ANY response, read every file in `ai/context/`:
 
-- Read all files in `ai/context`
-- Apply file placement rules strictly
-- If placement is ambiguous, stop and raise an architectural concern
-- Never guess or default to `shared`
-
-Your responsibility includes:
-
-- Choosing the correct domain
-- Choosing the correct internal folder/package
-- Proposing the exact file path before writing code
-
-If something conflicts:
-
-- Existing code > architecture.md > conventions.md > prompt > monorepo.md
-
-Claude must:
-
-- Write code that matches the coding style exactly
-- Prefer existing patterns over new ones
-- Reject solutions that violate style or patterns
-
-## Monorepo Guidelines
-
-The repository is a **monorepo** consisting of multiple packages and apps:
-
-- `design-system` → reusable UI components, Storybook, shared styles, tokens
-- `shared` → utilities, hooks, helpers, TypeScript types, domain-agnostic logic
-- `webapp` → main frontend application using `design-system` and `shared`
-
-Claude must:
-
-- Respect the monorepo boundaries
-- Place reusable code in `shared` or `design-system` if applicable
-- Place business/domain code in `domains/<domain>` inside `webapp`
-- Avoid adding business logic to `shared` or `design-system` unless fully reusable
+| File | Purpose |
+|------|---------|
+| `architecture.md` | Monorepo structure, placement rules |
+| `code-standards.md` | TypeScript, React, naming |
+| `conventions.md` | File and naming conventions |
+| `domains.md` | Domain folder structure |
+| `shared.md` | Shared package rules |
+| `monorepo.md` | Monorepo boundaries |
+| `stack.md` | Tech stack and forbidden libs |
+| `patterns.md` | Approved patterns |
+| `frontend_guidelines.md` | Quality rules index |
+| `accessibility.md` | WCAG 2.1 AA rules |
+| `seo.md` | SEO rules |
+| `web-vitals.md` | LCP / INP / CLS rules |
+| `security.md` | XSS, CSRF, tokens, CSP |
+| `testing.md` | Coverage and test rules |
+| `linting.md` | ESLint as source of truth |
+| `reviews.md` | Review checklists |
+| `scss_structure.md` | SCSS organization |
+| `rendering-strategy.md` | SSG / SSR / ISR / CSR decision tree |
+| `api-integration.md` | API call structure and conventions |
+| `data-fetching-patterns.md` | React Query patterns |
+| `state-management.md` | Redux Toolkit patterns |
+| `typescript-patterns.md` | Advanced TypeScript patterns |
+| `component-patterns.md` | Component composition patterns |
+| `error-handling.md` | Error boundaries, typed errors |
 
 ---
 
-## Frontend Guidelines
+## Conflict resolution
 
-- All components and styles must follow:
-  - Accessibility (a11y)
-  - SEO best practices
-  - Security (sanitize inputs, CSP)
-  - Performance and Web Vitals optimization
+Existing code > `architecture.md` > `conventions.md` > prompt > `monorepo.md`
 
-### Domain internal structure
+---
 
-Every domain follows the same structure:
+## Mode: FEATURE
 
-domains/<domain>/
-types.ts
-constants.ts
-components/ # business components only
-hooks/ # domain hooks only
-api/ # API calls
-utilities/ # business utilities
-helpers/ # business helpers
-validations/ # business validation rules
-localStorage/ # localStorage call
-sessionStorage/ # sessionStorage call
-mocks/ # tests mocks
-state/ # Redux / domain state
-actions/ # Redux / actions  
- reducers/ # Redux / reducers
-middlewares/ # Redux / middlewares
+Triggered when asked to create or implement a new feature.
 
-Claude MUST:
+**Step 1 — Understand**
+- What is the business capability? Which domain does it belong to?
+- Are there Figma, Jira, or Swagger references? Read them before writing code.
 
-- Place files in the correct subfolder
-- Never invent new folders
-- Refuse inconsistent structures
+**Step 2 — Plan (output before coding)**
+- Propose the exact file paths for every file to be created or modified.
+- Apply the placement decision tree (below).
+- If placement is ambiguous: stop and raise an architectural concern.
 
-### Shared
+**Step 3 — Implement in this order**
+1. Types (`types.ts`)
+2. API calls (`api/`)
+3. Validation (`validations/`)
+4. State / Redux (`state/`, `actions/`, `reducers/`)
+5. Hook(s) (`hooks/`)
+6. Component(s) (`components/`)
+7. SCSS (`styles.scss`)
+8. Tests (`*.test.ts` / `*.test.tsx`)
 
-`src/shared` contains ONLY code that is:
+**Step 4 — Self-review before output**
+Run through every checklist in `reviews.md` mentally before submitting code.
 
-- Business-agnostic
-- Domain-agnostic
-- Reusable across multiple projects
-- Portable without modification
+---
 
-If a file CANNOT be copy-pasted into another project → it MUST NOT be in shared.
+## Mode: REVIEW
 
-### Shared internal structure
+Triggered when asked to review code or a pull request.
 
-shared/
-components/ # generic UI components (no business meaning)
-hooks/ # generic hooks (no business naming)
-utils/ # pure functions only
-helpers/ # helpers
-constants/ # technical constants
-validations/ # generic validation rules
-classes/ # generic classes
-mocks/ # test mocks
+**Step 1** — Read all files in `ai/context/`.
+**Step 2** — Open each modified file one by one.
+**Step 3** — Apply every checklist in `reviews.md` in order (1 → 12).
+**Step 4** — Output issues grouped by severity:
 
-Rules per folder:
+```
+### Blockers
+- File: <name> | Issue: <description> | Suggestion: <fix>
 
-#### shared/components
+### Warnings
+- File: <name> | Issue: <description> | Suggestion: <fix>
 
-- UI-only components
-- No business logic
-- No API calls
-- Generic naming only (Button, Loader, Modal)
+### Info
+- File: <name> | Issue: <description>
+```
 
-#### shared/hooks
+**Step 5** — Merge verdict:
+- NOT MERGEABLE if any Blocker exists.
+- MERGEABLE WITH FIXES if only Warnings (must be addressed or justified).
+- MERGEABLE if only Info items.
 
-- No business naming
-- No API calls
-- Pure UI or technical behavior
-- Examples: useToggle, useScroll, useDebounce
+Do not rewrite code. Prefer targeted suggestions.
 
-#### shared/utils
+---
 
-- Pure functions
-- No side effects
-- No framework dependency if possible
-- Grouped by technical concern (array, string, number)
+## Mode: REFACTOR
 
-#### shared/validations
+Triggered when asked to refactor or improve existing code.
 
-- Generic rules only (email, password strength)
-- No business rules
+**Step 1** — Read the existing code fully before proposing anything.
+**Step 2** — Identify: what problem does the refactor solve? Name it explicitly.
+**Step 3** — Propose the minimal change that solves the problem.
+**Step 4** — Prefer: simpler logic, fewer files, less abstraction, easier debugging.
+**Step 5** — Never refactor what is not broken. Flag scope creep explicitly.
+**Step 6** — Ensure tests are updated or added for the refactored code.
 
-Claude MUST NOT:
+---
 
-- Put business logic in shared
-- Create "common" or "helpers" folders
+## Mode: TEST
 
-### Mandatory decision tree
+Triggered when asked to write tests.
 
-Before creating a file, Claude MUST apply this decision tree:
+**Step 1** — Read the implementation to understand what to test.
+**Step 2** — Apply rules from `testing.md`.
+**Step 3** — Cover: happy path, error path, edge cases, boundary values.
+**Step 4** — For hooks: use `renderHook` from Testing Library.
+**Step 5** — For API calls: mock with MSW, never mock `fetch` directly.
+**Step 6** — For pages: test user interactions, not implementation details.
+**Step 7** — Verify: coverage >= 80% after your tests.
 
-1. Does the code reference a business concept?
-   → YES → domains/<domain>
+---
 
-2. Is the code reusable across multiple projects without modification?
-   → YES → shared
+## File placement decision tree (mandatory)
 
-3. Is the code part of application shell?
-   → YES → layout
+Does the code reference a business concept?
+  YES → domains/<domain>/
 
-4. Otherwise:
-   → STOP and raise an architectural concern
+Is the code reusable across projects without modification?
+  YES → shared/
 
-### Ambiguity handling
+Is the code part of the application shell?
+  YES → layout/
 
-If placement is ambiguous:
+Otherwise → STOP. Raise an architectural concern.
 
-- Do NOT choose shared by default
-- Do NOT guess
-- Ask for clarification or raise a concern
+Never guess. Never default to shared. Never invent new folders.
 
-### Examples
+---
 
-- `useEntrepriseDetails` → domains/fiche-entreprise/hooks
-- `validateSiret` → domains/fiche-entreprise/validations
-- `useToggle` → shared/hooks
-- `Loader` → shared/components
-- `formatCurrency` → shared/utils/number
-- `HeaderMenu` → layout/components
+## Non-negotiable rules
 
-## Linting
+- No token or secret in localStorage, sessionStorage, or client env vars.
+- No <img> — always next/image.
+- No class-based React components.
+- No cross-domain imports.
+- No business logic in shared or design-system.
+- No ESLint violations committed.
+- No dangerouslySetInnerHTML without DOMPurify.sanitize().
+- No new dependency without explicit bundle size justification.
+- Coverage must not decrease. Target >= 80%.
 
-This project uses ESLint as a source of truth for code rules.
-
-Rules defined in:
-
-- eslint.config.js
-- .eslintrc.js
-- any custom plugin
-
-Must be respected at all times.
-
-If code violates lint rules:
-
-- Fix the code
-- Never suggest disabling rules unless explicitly asked
+---
 
 ## Decision log
 
-When unsure, prefer:
-
-- Simpler solution
-- Less abstraction
-- Fewer files
-- Easier debugging
-
-### Claude Context - SCSS Guidelines
-
-#### Purpose
-
-Help generate, organize, and reuse SCSS styles in the project.
-
-#### General Principles
-
-1. All `_*.scss` files are **partials**, never compiled alone.
-2. `styles.scss` is the **global entry point**, importing all abstracts.
-3. Each **domain** has its own folder `domains/<domain>/styles.scss` for domain-specific styles.
-4. Global abstracts can be imported into domains if needed.
-5. Mixins, variables, and reusable rules should always remain in `styles/`.
-
-#### Global Files
-
-- `_animations.scss`: reusable animations
-- `_borders.scss`: borders
-- `_breakpoints.scss`: media queries / breakpoints
-- `_colors.scss`: color palette and variables
-- `_mixins.scss`: reusable mixins
-- `_sharedRules.scss`: helpers / utilities / shared rules
-- `_spacings.scss`: margins, paddings, spacing
-- `_texts.scss`: typography (fonts, sizes, styles)
-- `styles.scss`: global entry point
-
-#### AI Notes
-
-- Always suggest using global abstracts before creating new styles.
-- Domain-specific styles should go inside the corresponding domain folder.
+When multiple solutions exist, prefer:
+1. Simpler logic
+2. Less abstraction
+3. Fewer files
+4. Easier debugging
+5. Existing patterns over new ones

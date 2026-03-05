@@ -4,49 +4,59 @@
 
 Ensure all frontend code is **accessible, SEO-friendly, secure, performant, and optimized for Web Vitals**.
 
-## Principles
+> Each topic has a dedicated context file. This file is the entry point — always read the dedicated files for full rules.
 
-### 1. Accessibility (a11y)
+---
 
-- Use semantic HTML (`<header>`, `<main>`, `<footer>`, `<nav>`, etc.).
-- Always provide `alt` text for images.
-- Ensure sufficient color contrast.
-- Use ARIA roles and labels when necessary.
-- Keyboard navigation must work for all interactive elements.
-- Forms must have `<label>` associated with inputs.
+## Dedicated context files
 
-### 2. SEO
+| Topic | File | Priority |
+|-------|------|----------|
+| Accessibility (A11y) | `accessibility.md` | Mandatory |
+| SEO | `seo.md` | Mandatory |
+| Web Vitals & Performance | `web-vitals.md` | Mandatory |
+| Security | `security.md` | Mandatory |
 
-- Use proper headings hierarchy (`<h1>` → `<h2>` → `<h3>` …).
-- Meta tags: `title`, `description`, `robots`, `canonical`
-- Use `robots.txt`, `schema.org`
-- Structured data (JSON-LD) for rich snippets if relevant.
-- Lazy-load images but keep them indexable.
-- Avoid duplicate content.
-- SSR (Server-Side Rendering) or pre-rendering for critical content (Next.js: `getServerSideProps`, `getStaticProps`).
+---
 
-### 3. Security
+## Principles (summary)
 
-- Sanitize all user input (XSS prevention).
-- Avoid `dangerouslySetInnerHTML` unless sanitized.
-- Use HTTPS and secure cookies.
-- Set proper Content Security Policy (CSP) headers.
-- Validate data both client-side and server-side.
+### 1. Accessibility (a11y) → see `accessibility.md`
 
-### 4. Performance & Web Vitals
+- Semantic HTML. ARIA only when necessary.
+- Keyboard navigation on all interactive elements.
+- Color contrast ≥ 4.5:1. Focus always visible.
+- Forms: every input has a `<label>`.
+- WCAG 2.1 Level AA minimum.
 
-- Minimize bundle size: code-splitting, tree-shaking.
-- Optimize images: WebP/AVIF, responsive sizes.
-- Use `next/image` or lazy-loading images/components.
-- Avoid layout shifts: set width/height for images and embeds.
-- Use caching and CDN where possible.
-- Monitor Core Web Vitals: LCP, CLS, FID.
-- Use React.memo, useCallback, useMemo when necessary.
+### 2. SEO → see `seo.md`
 
-## 5. Best Practices
+- Every page: unique `<title>`, `<meta description>`, canonical tag.
+- One `<h1>` per page. Hierarchy: H1 → H2 → H3.
+- Critical content: SSR or SSG (not CSR).
+- `/sitemap.xml` and `/robots.txt` mandatory.
+- Schema.org JSON-LD for articles, products, FAQs.
 
-- Component-based design (React/Next.js).
-- Use TypeScript for type safety.
-- Follow naming conventions and modular SCSS architecture.
-- Write unit and integration tests for critical code.
-- Document components and styles clearly.
+### 3. Security → see `security.md`
+
+- No tokens/secrets in localStorage, sessionStorage, or client env vars.
+- Sanitize all HTML with DOMPurify before rendering.
+- No `dangerouslySetInnerHTML` without sanitization.
+- CSP headers. HTTPS mandatory. CSRF protection on mutating calls.
+- API keys only on server-side proxy.
+
+### 4. Performance & Web Vitals → see `web-vitals.md`
+
+- LCP ≤ 2.5s · INP ≤ 200ms · CLS ≤ 0.1.
+- `next/image` for all images. No raw `<img>`.
+- Code split by route and on demand for heavy components.
+- Memoize only where profiling shows a real bottleneck.
+- CDN for static assets. Proper Cache-Control headers.
+
+### 5. Best Practices
+
+- TypeScript strict mode. Explicit types. No implicit `any`.
+- Function components only. No class components.
+- Component-based design. One component per file.
+- Unit and integration tests for all critical logic (≥ 80% coverage).
+- Document components via Storybook (design-system) or inline JSDoc.
