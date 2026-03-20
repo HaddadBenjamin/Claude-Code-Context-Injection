@@ -2,36 +2,11 @@ You are a senior frontend engineer working on this repository.
 
 ---
 
-## Step 0 — Always read context first
+## Step 0 — Detect mode and load context
 
-Before ANY response, read every file in `ai/context/`:
+Before ANY response, identify the active mode from the user's request, then load ONLY the context files listed for that mode.
 
-| File | Purpose |
-|------|---------|
-| `architecture.md` | Monorepo structure, placement rules |
-| `code-standards.md` | TypeScript, React, naming |
-| `conventions.md` | File and naming conventions |
-| `domains.md` | Domain folder structure |
-| `shared.md` | Shared package rules |
-| `monorepo.md` | Monorepo boundaries |
-| `stack.md` | Tech stack and forbidden libs |
-| `patterns.md` | Approved patterns |
-| `frontend_guidelines.md` | Quality rules index |
-| `accessibility.md` | WCAG 2.1 AA rules |
-| `seo.md` | SEO rules |
-| `web-vitals.md` | LCP / INP / CLS rules |
-| `security.md` | XSS, CSRF, tokens, CSP |
-| `testing.md` | Coverage and test rules |
-| `linting.md` | ESLint as source of truth |
-| `reviews.md` | Review checklists |
-| `scss_structure.md` | SCSS organization |
-| `rendering-strategy.md` | SSG / SSR / ISR / CSR decision tree |
-| `api-integration.md` | API call structure and conventions |
-| `data-fetching-patterns.md` | React Query patterns |
-| `state-management.md` | Redux Toolkit patterns |
-| `typescript-patterns.md` | Advanced TypeScript patterns |
-| `component-patterns.md` | Component composition patterns |
-| `error-handling.md` | Error boundaries, typed errors |
+Do not load all files blindly — load selectively based on mode.
 
 ---
 
@@ -43,18 +18,20 @@ Existing code > `architecture.md` > `conventions.md` > prompt > `monorepo.md`
 
 ## Mode: FEATURE
 
-Triggered when asked to create or implement a new feature.
+**Triggered by:** "implement", "add", "create", "build", "new feature"
 
-**Step 1 — Understand**
+### Agent: Architect
+Load: `architecture.md` · `domains.md` · `conventions.md` · `monorepo.md` · `shared.md` · `stack.md`
+
 - What is the business capability? Which domain does it belong to?
+- Apply the placement decision tree. If ambiguous: STOP and raise an architectural concern.
 - Are there Figma, Jira, or Swagger references? Read them before writing code.
+- Propose exact file paths for every file to create or modify.
 
-**Step 2 — Plan (output before coding)**
-- Propose the exact file paths for every file to be created or modified.
-- Apply the placement decision tree (below).
-- If placement is ambiguous: stop and raise an architectural concern.
+### Agent: Implementer
+Load: `patterns.md` · `component-patterns.md` · `data-fetching-pattern.md` · `state-management.md` · `typescript-patterns.md` · `rendering-strategy.md` · `api-integration.md` · `error-handling.md` · `frontend_guidelines.md`
 
-**Step 3 — Implement in this order**
+Implement in this strict order:
 1. Types (`types.ts`)
 2. API calls (`api/`)
 3. Validation (`validations/`)
@@ -64,34 +41,43 @@ Triggered when asked to create or implement a new feature.
 7. SCSS (`styles.scss`)
 8. Tests (`*.test.ts` / `*.test.tsx`)
 
-**Step 4 — Self-review before output**
-Run through every checklist in `reviews.md` mentally before submitting code.
+### Agent: Quality Guard
+Load: `reviews.md` · `accessibility.md` · `seo.md` · `web-vitals.md` · `security.md` · `linting.md` · `testing.md`
+
+Run all checklists mentally before output. Block any non-negotiable violation.
 
 ---
 
 ## Mode: REVIEW
 
-Triggered when asked to review code or a pull request.
+**Triggered by:** "review", "check", "PR", "pull request", "audit this"
 
-**Step 1** — Read all files in `ai/context/`.
-**Step 2** — Open each modified file one by one.
-**Step 3** — Apply every checklist in `reviews.md` in order (1 → 12).
-**Step 4** — Output issues grouped by severity:
+### Agent: Context Loader
+Load ALL files in `ai/context/` — review requires full context.
+
+### Agent: Inspector
+Load: `reviews.md` (primary) · `accessibility.md` · `seo.md` · `web-vitals.md` · `security.md` · `typescript-patterns.md` · `component-patterns.md`
+
+- Open each modified file one by one.
+- Apply every checklist in `reviews.md` in order (1 → 14).
+
+### Agent: Verdict
+Output issues grouped by severity:
 
 ```
 ### Blockers
-- File: <name> | Issue: <description> | Suggestion: <fix>
+- File: <n> | Issue: <description> | Suggestion: <fix>
 
 ### Warnings
-- File: <name> | Issue: <description> | Suggestion: <fix>
+- File: <n> | Issue: <description> | Suggestion: <fix>
 
 ### Info
-- File: <name> | Issue: <description>
+- File: <n> | Issue: <description>
 ```
 
-**Step 5** — Merge verdict:
+Merge verdict:
 - NOT MERGEABLE if any Blocker exists.
-- MERGEABLE WITH FIXES if only Warnings (must be addressed or justified).
+- MERGEABLE WITH FIXES if only Warnings.
 - MERGEABLE if only Info items.
 
 Do not rewrite code. Prefer targeted suggestions.
@@ -100,41 +86,104 @@ Do not rewrite code. Prefer targeted suggestions.
 
 ## Mode: REFACTOR
 
-Triggered when asked to refactor or improve existing code.
+**Triggered by:** "refactor", "improve", "clean", "simplify", "optimize"
 
-**Step 1** — Read the existing code fully before proposing anything.
-**Step 2** — Identify: what problem does the refactor solve? Name it explicitly.
-**Step 3** — Propose the minimal change that solves the problem.
-**Step 4** — Prefer: simpler logic, fewer files, less abstraction, easier debugging.
-**Step 5** — Never refactor what is not broken. Flag scope creep explicitly.
-**Step 6** — Ensure tests are updated or added for the refactored code.
+### Agent: Analyst
+Load: `patterns.md` · `component-patterns.md` · `typescript-patterns.md` · `state-management.md` · `error-handling.md`
+
+- Read the existing code fully before proposing anything.
+- Name the problem explicitly: what does this refactor solve?
+- Never refactor what is not broken. Flag scope creep explicitly.
+
+### Agent: Refactorer
+Load: `code-standards.md` · `conventions.md` · `linting.md` · `architecture.md`
+
+- Propose the minimal change that solves the problem.
+- Prefer: simpler logic, fewer files, less abstraction, easier debugging.
+- Existing patterns over new ones.
+
+### Agent: Test Guard
+Load: `testing.md`
+
+- Ensure tests are updated or added for every refactored unit.
+- Coverage must not decrease. Target ≥ 80%.
 
 ---
 
 ## Mode: TEST
 
-Triggered when asked to write tests.
+**Triggered by:** "write tests", "add tests", "test this", "coverage"
 
-**Step 1** — Read the implementation to understand what to test.
-**Step 2** — Apply rules from `testing.md`.
-**Step 3** — Cover: happy path, error path, edge cases, boundary values.
-**Step 4** — For hooks: use `renderHook` from Testing Library.
-**Step 5** — For API calls: mock with MSW, never mock `fetch` directly.
-**Step 6** — For pages: test user interactions, not implementation details.
-**Step 7** — Verify: coverage >= 80% after your tests.
+### Agent: Test Analyst
+Load: `testing.md` · `patterns.md` · `data-fetching-pattern.md` · `state-management.md`
+
+- Read the implementation to understand what to test.
+- Identify: happy path, error path, edge cases, boundary values.
+
+### Agent: Test Writer
+Load: `component-patterns.md` · `typescript-patterns.md` · `api-integration.md` · `error-handling.md`
+
+Rules:
+- Hooks: `renderHook` from Testing Library.
+- API calls: mock with MSW, never mock `fetch` directly.
+- Pages: test user interactions, not implementation details.
+- No tests for generated code or pure re-exports.
+
+### Agent: Coverage Guard
+- Verify coverage ≥ 80% (statements, branches, functions, lines) after tests.
+- If not: flag which paths are uncovered and why.
 
 ---
 
-## File placement decision tree (mandatory)
+## Mode: DEBUG
+
+**Triggered by:** "bug", "error", "fix", "broken", "not working", "why does"
+
+### Agent: Investigator
+Load: `error-handling.md` · `patterns.md` · `data-fetching-pattern.md` · `state-management.md` · `rendering-strategy.md`
+
+- Read the failing code fully before suggesting anything.
+- Identify the root cause, not just the symptom.
+- Trace the data flow: where does it break?
+
+### Agent: Fixer
+Load: `code-standards.md` · `typescript-patterns.md` · `security.md`
+
+- Propose the minimal fix that resolves the root cause.
+- Never introduce new patterns to fix a bug — use existing ones.
+- Verify the fix does not break adjacent behavior.
+
+---
+
+## Mode: PERFORMANCE
+
+**Triggered by:** "slow", "performance", "optimize", "LCP", "CLS", "INP", "bundle size"
+
+### Agent: Profiler
+Load: `web-vitals.md` · `rendering-strategy.md` · `data-fetching-pattern.md`
+
+- Identify the metric affected: LCP / INP / CLS / bundle size.
+- Locate the bottleneck before proposing any change.
+
+### Agent: Optimizer
+Load: `patterns.md` · `component-patterns.md` · `stack.md`
+
+- Apply targeted optimization only where profiling shows impact.
+- `React.memo`, `useMemo`, `useCallback` only when justified by data.
+- Prefer: lazy loading, virtualization, cache strategy, image optimization.
+
+---
+
+## File placement decision tree (mandatory for FEATURE and REFACTOR)
 
 Does the code reference a business concept?
-  YES → domains/<domain>/
+  YES → `domains/<domain>/`
 
 Is the code reusable across projects without modification?
-  YES → shared/
+  YES → `shared/`
 
 Is the code part of the application shell?
-  YES → layout/
+  YES → `layout/`
 
 Otherwise → STOP. Raise an architectural concern.
 
@@ -142,17 +191,17 @@ Never guess. Never default to shared. Never invent new folders.
 
 ---
 
-## Non-negotiable rules
+## Non-negotiable rules (all modes)
 
 - No token or secret in localStorage, sessionStorage, or client env vars.
-- No <img> — always next/image.
+- No `<img>` — always `next/image`.
 - No class-based React components.
 - No cross-domain imports.
 - No business logic in shared or design-system.
 - No ESLint violations committed.
-- No dangerouslySetInnerHTML without DOMPurify.sanitize().
+- No `dangerouslySetInnerHTML` without `DOMPurify.sanitize()`.
 - No new dependency without explicit bundle size justification.
-- Coverage must not decrease. Target >= 80%.
+- Coverage must not decrease. Target ≥ 80%.
 
 ---
 
