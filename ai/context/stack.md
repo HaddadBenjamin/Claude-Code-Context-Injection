@@ -13,6 +13,7 @@
 | Zod | latest | Schema validation + type inference |
 | MUI (Material UI) | v5 | Component library / styling |
 | SCSS Modules | — | Domain and component styles |
+| React ARIA ou Radis UI | — | Accessibility |
 
 ## Testing
 
