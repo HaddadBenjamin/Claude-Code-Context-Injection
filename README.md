@@ -1,5 +1,3 @@
-![Context Injection](image.png)
-
 # Claude Code — Context & Skills Réutilisables
 
 Système d'injection de contexte pour Claude Code. Formalise les standards de code, l'architecture, et la méthodologie de review en fichiers markdown — chargés sélectivement selon la tâche.
@@ -13,7 +11,7 @@ Système d'injection de contexte pour Claude Code. Formalise les standards de co
 ```
 ai/
 ├── claude.md              Orchestrateur principal — détection de mode, activation des rôles
-├── context/               24 fichiers de standards techniques (chargés sélectivement)
+├── context/               18 fichiers de standards techniques (chargés sélectivement)
 │   ├── _index.md          Index de référence rapide
 │   └── ...
 └── skills/                Tout ce qui définit le comportement de Claude
@@ -28,9 +26,9 @@ ai/
     │   ├── performance.md     LCP / INP / CLS, profiling first
     │   └── qa.md              4 axes qualité, standards
     └── comportements/     Comportements permanents de Claude
-    ├── anti-sycophancy.md    Priorité à la vérité, pas à l'accord
-    ├── anti-hallucination.md Déclaration d'incertitude explicite
-    └── conversation-naturelle.md  Style humain, pas robotique
+        ├── anti-sycophancy.md    Priorité à la vérité, pas à l'accord
+        ├── anti-hallucination.md Déclaration d'incertitude explicite
+        └── conversation-naturelle.md  Style humain, pas robotique
 ```
 
 ---
@@ -107,7 +105,7 @@ Modifier ou remplacer les fichiers selon ton stack :
 - `conventions.md` → tes conventions de nommage
 - `reviews.md` → tes critères de review
 
-### Rôles (`ai/roles/`)
+### Rôles (`ai/skills/roles/`)
 
 Les rôles sont indépendants et modulables. Tu peux en ajouter, modifier les checklists, ou ajuster les seuils (ex : coverage à 90% au lieu de 80%).
 
