@@ -1,75 +1,143 @@
-![alt text](image.png)
+![Context Injection](image.png)
 
-# 🎯 Objective
+# Claude Code — Context & Skills Réutilisables
 
-Build an AI assistant that:
+Système d'injection de contexte pour Claude Code. Formalise les standards de code, l'architecture, et la méthodologie de review en fichiers markdown — chargés sélectivement selon la tâche.
 
-- Understands your tech stack
-- Respects your architecture
-- Applies your coding standards
-- Reviews code like you do
-- Doesn't require repeating this information with every prompt
-- Can work with existing project resources:
-  - **Jira tickets** for requirements and acceptance criteria
-  - **Figma mockups** for design fidelity
-  - **Swagger / API documentation** for backend integration
-
-Additionally, explore whether it is possible to **connect Claude Code or other AI agents directly to internal resources** (Jira, Swagger, Figma) to work efficiently and leverage live project data.
-
-This is not RAG in the strict sense.  
-👉 It's **context injection / prompt grounding via files**.  
-RAG is more about APIs, databases, etc., for handling very large-scale data volumes.
+**Résultat :** Claude comprend ton stack, respecte ton architecture, applique tes standards, et review le code comme toi — sans répétition à chaque prompt.
 
 ---
 
-## ⚠️ Status
+## Structure
 
-**This project is a draft / work in progress.**  
-It is an **exploratory project that took ~3 hours to assemble**.
-
-It represents an initial exploration of formalizing AI-assisted development workflows and will evolve over time.
-
----
-
-## 🔍 Vision
-
-I want to formalize my coding and review methodology with AI so that it respects my standards for:
-
-- **Code quality** — structure, organization, and modularity
-- **Architecture** — patterns, separation of concerns, scalability
-- **Code splitting** — optimized chunking and lazy loading
-- **SEO** — semantic markup, meta tags, structured data
-- **Web Vitals** — Core Web Vitals optimization (LCP, CLS, FID/INP)
-- **Performance** — bundle size, runtime efficiency, caching strategies
-- **Accessibility** — WCAG compliance, keyboard navigation, screen reader support
-- **Test coverage** — maintaining high coverage standards
-- **Design implementation** — using Figma mockups as the source of truth
-- **Feature development from resources** — using Jira tickets, Figma, and Swagger/API to implement complete features with all necessary resources
-
-### 💡 Why?
-
-I'm convinced that if done properly, this approach will:
-
-- **Save time** — for me and future teams on client projects
-- **Standardize workflows** — enforce consistency across projects
-- **Increase efficiency** — time is money
-
-### 🚀 Long-term Goal
-
-Eventually, we'll only need to **adapt the AI context injection per project** to normalize our entire workflow.
-
-The developer's role will gradually shift to:
-
-- **Reviewing** what the AI produces
-- **Validating** the output against requirements
-- **Fine-tuning** edge cases
-
-This is the future of development — **AI as the builder, humans as the architects and validators**, fully integrated with existing project management, design, and API resources, while exploring the possibility of **direct AI connections to internal project tools** for maximum efficiency.
+```
+ai/
+├── claude.md              Orchestrateur principal — détection de mode, activation des rôles
+├── context/               24 fichiers de standards techniques (chargés sélectivement)
+│   ├── _index.md          Index de référence rapide
+│   └── ...
+└── skills/                Tout ce qui définit le comportement de Claude
+    ├── roles/             Rôles spécialisés — adoptés selon le mode détecté
+    │   ├── architecte.md      Placement DDD, bounded contexts
+    │   ├── implementeur.md    Rédaction de code, ordre d'implémentation
+    │   ├── reviewer.md        Review 14 critères, verdict de merge
+    │   ├── testeur.md         Pyramide de tests, coverage ≥ 80%
+    │   ├── debugger.md        Investigation cause racine, fix minimal
+    │   ├── securite.md        Surface d'attaque, règles absolues
+    │   ├── accessibilite.md   WCAG 2.1 AA, 8 blockers
+    │   ├── performance.md     LCP / INP / CLS, profiling first
+    │   └── qa.md              4 axes qualité, standards
+    └── comportements/     Comportements permanents de Claude
+    ├── anti-sycophancy.md    Priorité à la vérité, pas à l'accord
+    ├── anti-hallucination.md Déclaration d'incertitude explicite
+    └── conversation-naturelle.md  Style humain, pas robotique
+```
 
 ---
 
-## 🔧 Points to continue exploring
+## Comment ça fonctionne
 
-- Connect Claude Code to **Jira** for project management, **Figma** for UX mockups, and **Swagger** for backend APIs.
-- Generate a script **feature from A to Z** using a prompt example by providing the links to Jira, Figma, and Swagger.
-- Perform a script **code review** by giving a link to a MR and let Claude Code perform the review automatically while respecting `ai/claude.md` and `ai/context/reviews.md`.
+### 1. Détection de mode automatique
+
+Claude détecte le mode depuis la requête et charge uniquement les fichiers nécessaires.
+
+| Requête | Mode activé |
+|---------|-------------|
+| "ajoute une feature de paiement" | FEATURE |
+| "review ce PR" | REVIEW |
+| "refactorise ce hook" | REFACTOR |
+| "écris les tests pour ce composant" | TEST |
+| "ce bouton ne fonctionne plus" | DEBUG |
+| "le LCP est à 4s" | PERFORMANCE |
+| "où mettre ce service ?" | ARCHITECTURE |
+| "migre de Redux vers Zustand" | MIGRATION |
+| "explique ce pattern" | DOC |
+
+### 2. Orchestration de sous-agents
+
+Selon le mode, Claude adopte des rôles séquentiels ou spawn des sous-agents parallèles.
+
+**Exemple — MODE REVIEW :**
+
+```
+Claude spawne 4 agents simultanément :
+  ├── Reviewer     → 14 critères standards
+  ├── Sécurité     → scan surface d'attaque
+  ├── Accessibilité → WCAG 2.1 AA
+  └── Performance  → Core Web Vitals
+
+→ Synthèse consolidée : 🚫 BLOCKERS / ⚠️ WARNINGS / ℹ️ INFO
+```
+
+**Exemple — MODE FEATURE :**
+
+```
+Phase 1 (bloquante) : Architecte valide le placement DDD
+Phase 2 (séquentielle) : Implémenteur code dans l'ordre strict
+Phase 3 (parallèle) : QA + Sécurité + Accessibilité en simultané
+```
+
+### 3. Comportements permanents
+
+`anti-sycophancy` et `anti-hallucination` sont toujours actifs — Claude priorise la vérité sur l'accord, et déclare son incertitude plutôt que d'inventer.
+
+---
+
+## Règles Non-Négociables
+
+Présentes dans chaque mode, impossible de les bypass :
+
+- Aucun token/secret en localStorage ou env vars client
+- Jamais `<img>` — toujours `next/image`
+- Jamais de composant React basé sur classe
+- Jamais d'import cross-domain
+- Jamais `dangerouslySetInnerHTML` sans `DOMPurify.sanitize()`
+- Aucune nouvelle dépendance sans justification bundle size
+- Coverage ≥ 80%, jamais en baisse
+
+---
+
+## Adapter à ton projet
+
+### Contexte technique (`ai/context/`)
+
+Modifier ou remplacer les fichiers selon ton stack :
+- `stack.md` → liste ton framework, tes librairies, tes interdictions
+- `architecture.md` → ta structure de projet (pas nécessairement DDD)
+- `conventions.md` → tes conventions de nommage
+- `reviews.md` → tes critères de review
+
+### Rôles (`ai/roles/`)
+
+Les rôles sont indépendants et modulables. Tu peux en ajouter, modifier les checklists, ou ajuster les seuils (ex : coverage à 90% au lieu de 80%).
+
+### Comportements (`ai/comportements/`)
+
+- `anti-sycophancy.md` et `anti-hallucination.md` : recommandés en permanent
+- `conversation-naturelle.md` : activer quand tu veux discuter sans mode technique
+
+---
+
+## Intégration avec outils projet
+
+Objectif exploratoire : connecter Claude Code directement aux ressources internes.
+
+| Outil | Usage |
+|-------|-------|
+| **Jira** | Lire les tickets pour extraire les critères d'acceptance |
+| **Figma** | Valider l'implémentation contre les maquettes |
+| **Swagger / OpenAPI** | Générer les types TS et les appels API |
+| **GitLab / GitHub MR** | Review automatique via lien de MR |
+
+**Exemples de prompts :**
+- `"Implémente la feature décrite dans ce ticket Jira : [lien]"`
+- `"Review cette MR en respectant les standards du projet : [lien]"`
+- `"Génère les types TS depuis ce swagger : [lien]"`
+
+---
+
+## Ce que ce projet n'est pas
+
+Ce n'est pas du RAG (Retrieval-Augmented Generation).
+
+Le RAG gère de grands volumes de données via des APIs et bases vectorielles. Ici, c'est de l'**injection de contexte par fichiers** — les standards sont fournis directement comme contexte, chargés sélectivement selon la tâche. Plus simple, plus prévisible, plus adapté aux standards d'équipe.
