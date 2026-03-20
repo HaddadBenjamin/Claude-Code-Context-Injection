@@ -1,36 +1,111 @@
-## Frontend architecture – Domain Driven Design
+# Architecture – Domain Driven Design
 
-The frontend follows a strict domain-based architecture.
+## Structure Générale
 
-### Domains
+```
+src/
+  domains/    # Business capabilities (bounded contexts)
+  shared/     # Code réutilisable cross-projet
+  layout/     # Application shell
+```
 
-- Each folder in `src/domains/` represents a business domain (bounded context).
-- A domain contains all code related to a specific business capability.
+---
 
-Domains MUST NOT:
-- depend on other domains
-- contain generic or reusable utilities
+## Arbre de décision (obligatoire avant tout nouveau fichier)
 
-### Shared
+```
+Code métier spécifique ?
+  OUI → domains/<domain>/
 
-`src/shared/` contains ONLY cross-project reusable code.
+Réutilisable cross-projet sans modification ?
+  OUI → shared/
 
-Rules:
-- No business logic
-- No domain-specific naming
-- No dependency on `domains`
-- Code must be portable to another project without modification
+Shell applicatif / structure globale ?
+  OUI → layout/
 
-### Layout
+Sinon → STOP — lever une concern architecturale
+```
 
-`src/layout/` contains application shell and global UI structure.
+Ne jamais deviner. Ne jamais defaulter vers `shared`. Ne jamais inventer de nouveaux dossiers.
 
-No business logic is allowed.
+---
 
-### Placement rules (mandatory)
+## Domains
 
-When creating code, always apply this decision tree:
-1. Business-specific → domains/<domain>
-2. Cross-project reusable → shared
-3. App shell / structure → layout
-4. Otherwise → raise an architectural concern
+Chaque dossier dans `src/domains/` représente une business capability (bounded context).
+
+**Quand placer dans un domain ?**
+- Contient de la logique métier
+- Spécifique à un concept business
+- Utilise un nommage domain-specific
+- Ne peut pas être réutilisé dans un autre projet sans modification
+
+**Ce qu'un domain PEUT contenir :**
+
+```
+domains/<domain>/
+  types.ts
+  constants.ts
+  index.ts          # API publique uniquement — jamais importer depuis l'intérieur
+  components/       # composants business uniquement
+  hooks/            # domain hooks uniquement
+  api/              # appels API
+  validations/      # règles de validation business
+  state/            # Redux / state du domain
+  actions/          # Redux actions
+  reducers/         # Redux reducers
+  middlewares/      # Redux middlewares
+  utils/            # utilitaires business
+  helpers/          # helpers business
+  mocks/            # mocks de test
+```
+
+**Ce qu'un domain NE DOIT PAS faire :**
+- Dépendre d'un autre domain (import cross-domain = Blocker)
+- Contenir des utilitaires génériques
+- Exposer sa structure interne directement (passer par `index.ts`)
+
+---
+
+## Shared
+
+`src/shared/` contient UNIQUEMENT du code qui est :
+- Business-agnostique
+- Domain-agnostique
+- Réutilisable dans plusieurs projets
+- Portable sans modification
+
+**Test :** si le fichier ne peut pas être copié-collé dans un autre projet → il ne va PAS dans shared.
+
+**Structure interne :**
+
+```
+shared/
+  components/   # UI generiques (Button, Loader, Modal) — pas de logique métier
+  hooks/        # hooks generiques (useToggle, useScroll, useDebounce)
+  utils/        # fonctions pures, pas d'effets de bord
+  helpers/      # helpers
+  constants/    # constantes techniques
+  validations/  # règles génériques (email, password strength)
+  classes/      # classes génériques
+  mocks/        # mocks de test
+```
+
+**Claude NE DOIT PAS :**
+- Mettre de logique métier dans shared
+- Créer des dossiers "common" ou "helpers" à la racine
+
+---
+
+## Layout
+
+`src/layout/` contient le shell applicatif et la structure UI globale. Pas de logique métier.
+
+---
+
+## Règles Absolues
+
+- Import `domains/A` depuis `domains/B` = **Blocker immédiat**
+- Logique métier dans `shared/` = **Blocker immédiat**
+- Nouveau dossier hors arborescence = **Blocker immédiat**
+- Ambiguïté de placement ignorée = **Blocker immédiat**

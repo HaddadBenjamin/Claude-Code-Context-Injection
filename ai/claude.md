@@ -74,7 +74,7 @@ En cas de doute → demander lequel des modes convient avant de commencer.
 
 ### Phase 1 — Architecte (bloquant)
 Adopter le rôle `ai/skills/roles/architecte.md`
-Charger : `context/architecture.md` · `context/domains.md` · `context/conventions.md` · `context/monorepo.md` · `context/shared.md` · `context/stack.md`
+Charger : `context/architecture.md` · `context/monorepo.md` · `context/stack.md`
 
 - Identifier la business capability et le domaine cible
 - Appliquer l'arbre de décision de placement
@@ -84,7 +84,7 @@ Charger : `context/architecture.md` · `context/domains.md` · `context/conventi
 
 ### Phase 2 — Implémenteur (attend Phase 1)
 Adopter le rôle `ai/skills/roles/implementeur.md`
-Charger : `context/patterns.md` · `context/component-patterns.md` · `context/data-fetching-pattern.md` · `context/state-management.md` · `context/typescript-patterns.md` · `context/rendering-strategy.md` · `context/api-integration.md` · `context/error-handling.md` · `context/frontend_guidelines.md`
+Charger : `context/component-patterns.md` · `context/state-management.md` · `context/typescript-patterns.md` · `context/rendering-strategy.md` · `context/api.md` · `context/error-handling.md`
 
 Implémenter dans l'ordre strict :
 1. Types → 2. API → 3. Validations → 4. State → 5. Hooks → 6. Composants → 7. SCSS → 8. Tests
@@ -133,7 +133,7 @@ Verdict : NOT MERGEABLE / MERGEABLE WITH FIXES / MERGEABLE
 
 ### Phase 1 — Analyste
 Adopter `ai/skills/roles/architecte.md`
-Charger : `context/patterns.md` · `context/component-patterns.md` · `context/typescript-patterns.md` · `context/state-management.md` · `context/error-handling.md`
+Charger : `context/component-patterns.md` · `context/typescript-patterns.md` · `context/state-management.md` · `context/error-handling.md`
 
 - Lire le code existant **intégralement** avant de proposer quoi que ce soit
 - Nommer le problème explicitement : que résout ce refactor ?
@@ -142,7 +142,7 @@ Charger : `context/patterns.md` · `context/component-patterns.md` · `context/t
 
 ### Phase 2 — Refactorer
 Adopter `ai/skills/roles/implementeur.md`
-Charger : `context/code-standards.md` · `context/conventions.md` · `context/linting.md` · `context/architecture.md`
+Charger : `context/standards.md` · `context/linting.md` · `context/architecture.md`
 
 - Proposer le **changement minimal** qui résout le problème
 - Préférer : logique plus simple, moins de fichiers, moins d'abstraction
@@ -163,13 +163,13 @@ Charger : `context/testing.md`
 
 ### Phase 1 — Analyste de tests
 Adopter `ai/skills/roles/testeur.md`
-Charger : `context/testing.md` · `context/patterns.md` · `context/data-fetching-pattern.md` · `context/state-management.md`
+Charger : `context/testing.md` · `context/api.md` · `context/state-management.md`
 
 - Lire l'implémentation pour comprendre quoi tester
 - Identifier : happy path · error path · edge cases · boundary values
 
 ### Phase 2 — Rédacteur de tests
-Charger : `context/component-patterns.md` · `context/typescript-patterns.md` · `context/api-integration.md` · `context/error-handling.md`
+Charger : `context/component-patterns.md` · `context/typescript-patterns.md` · `context/api.md` · `context/error-handling.md`
 
 - Hooks : `renderHook` Testing Library
 - API : MSW uniquement
@@ -188,7 +188,7 @@ Charger : `context/component-patterns.md` · `context/typescript-patterns.md` ·
 
 ### Phase 1 — Investigateur
 Adopter `ai/skills/roles/debugger.md`
-Charger : `context/error-handling.md` · `context/patterns.md` · `context/data-fetching-pattern.md` · `context/state-management.md` · `context/rendering-strategy.md`
+Charger : `context/error-handling.md` · `context/api.md` · `context/state-management.md` · `context/rendering-strategy.md`
 
 - Lire le code en erreur intégralement
 - Identifier la cause racine (pas seulement le symptôme)
@@ -196,7 +196,7 @@ Charger : `context/error-handling.md` · `context/patterns.md` · `context/data-
 
 ### Phase 2 — Fixer
 Adopter `ai/skills/roles/implementeur.md`
-Charger : `context/code-standards.md` · `context/typescript-patterns.md`
+Charger : `context/standards.md` · `context/typescript-patterns.md`
 
 - Fix minimal qui résout la cause racine
 - Jamais de nouveau pattern pour corriger un bug
@@ -213,14 +213,14 @@ Si le bug touche auth / tokens / data sensible → spawner `ai/skills/roles/secu
 
 ### Phase 1 — Profileur
 Adopter `ai/skills/roles/performance.md`
-Charger : `context/web-vitals.md` · `context/rendering-strategy.md` · `context/data-fetching-pattern.md`
+Charger : `context/web-vitals.md` · `context/rendering-strategy.md` · `context/api.md`
 
 - Identifier la métrique affectée : LCP / INP / CLS / bundle size
 - Localiser le bottleneck **avant** de proposer un changement
 
 ### Phase 2 — Optimiseur
 Adopter `ai/skills/roles/implementeur.md`
-Charger : `context/patterns.md` · `context/component-patterns.md` · `context/stack.md`
+Charger : `context/component-patterns.md` · `context/component-patterns.md` · `context/stack.md`
 
 - Optimisation ciblée uniquement là où le profiling montre un impact
 - `React.memo`, `useMemo`, `useCallback` uniquement si justifiés par mesure
@@ -234,7 +234,7 @@ Charger : `context/patterns.md` · `context/component-patterns.md` · `context/s
 
 ### Rôle unique
 Adopter `ai/skills/roles/architecte.md`
-Charger : `context/architecture.md` · `context/domains.md` · `context/monorepo.md` · `context/shared.md` · `context/conventions.md`
+Charger : `context/architecture.md` · `context/monorepo.md`
 
 - Raisonner sur la structure avant toute implémentation
 - Proposer des chemins exacts, pas des directions vagues
@@ -260,7 +260,7 @@ Charger : `context/architecture.md` · `context/domains.md` · `context/monorepo
 **Déclenché par :** explain, document, README, comment, explique
 
 ### Rôle unique
-Charger : `context/code-standards.md` · `context/conventions.md` · `context/architecture.md`
+Charger : `context/standards.md` · `context/standards.md` · `context/architecture.md`
 
 - Documentation claire, concise, avec exemples concrets
 - En cohérence avec le code existant (ne pas documenter des patterns qui n'existent pas)
