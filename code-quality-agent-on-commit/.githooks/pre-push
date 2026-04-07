@@ -1,0 +1,4 @@
+#!/bin/bash
+# Active avec : git config core.hooksPath .githooks
+echo "🔍 Lancement du code review agent avant push..."
+./scripts/agent-review.sh develop
