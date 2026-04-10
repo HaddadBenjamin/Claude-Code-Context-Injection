@@ -1,0 +1,41 @@
+{
+  "preferredNotifChannel": "terminal_bell",
+  "hooks": {
+    "Stop": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "[Console]::Beep(784, 800)",
+            "shell": "powershell",
+            "async": true
+          }
+        ]
+      }
+    ],
+    "Notification": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "[Console]::Beep(784, 800)",
+            "shell": "powershell",
+            "async": true
+          }
+        ]
+      }
+    ],
+    "PermissionRequest": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "[Console]::Beep(784, 800)",
+            "shell": "powershell",
+            "async": true
+          }
+        ]
+      }
+    ]
+  }
+}
