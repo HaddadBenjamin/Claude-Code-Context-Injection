@@ -1,0 +1,7 @@
+# macOS / Linux / Git Bash
+chmod +x set-claude-thinking.sh && ./set-claude-thinking.sh
+
+# PowerShell Windows
+pwsh set-claude-thinking.sh
+# ou
+powershell -File set-claude-thinking.sh
