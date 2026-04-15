@@ -1,0 +1,1 @@
+Installer l'extension Claude Chrome sur votre navigateur.

@@ -1,0 +1,1 @@
+Permet d'être notifié lorsque Claude à terminer une tâche ou vous pose une question.
